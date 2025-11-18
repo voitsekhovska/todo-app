@@ -1,0 +1,335 @@
+:root {
+  --accent: hsl(220, 98%, 61%);
+  --checked: linear-gradient(135deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%));
+
+  /* Light Theme */
+  --bg: hsl(0, 0%, 98%);
+  --card: hsl(0, 0%, 98%);
+  --title-color: hsl(0, 0%, 98%);
+  --text: hsl(235, 19%, 35%);
+  --border-color: hsl(233, 11%, 84%);
+  --filters-text: hsl(236, 9%, 61%);
+
+  --bg-image: url(./images/bg-desktop-light.jpg);
+  --bg-image-mobile: url(./images/bg-mobile-light.jpg);
+  --shadow: 0px 20px 40px rgba(0, 0, 0, 0.1);
+
+  /* Dark Theme */
+  --dark-bg: hsl(235, 21%, 11%);
+  --dark-card: hsl(235, 24%, 19%);
+  --dark-text: hsl(234, 39%, 85%);
+  --dark-title-color: hsl(0, 0%, 98%);
+  --dark-filters-text: hsl(235, 16%, 43%);
+  --dark-border-color: hsl(233, 14%, 35%);
+
+  --bg-image-dark: url(./images/bg-desktop-dark.jpg);
+  --bg-image-mobile-dark: url(./images/bg-mobile-dark.jpg);
+  --shadow-dark: 0px 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Dark Theme */
+body.dark {
+  --bg: var(--dark-bg);
+  --card: var(--dark-card);
+  --text: var(--dark-text);
+  --title-color: var(--dark-title-color);
+
+  --border-color: var(--dark-border-color);
+  --filters-text: var(--dark-filters-text);
+
+  --bg-image: var(--bg-image-dark);
+  --bg-image-mobile: var(--bg-image-mobile-dark);
+  --shadow: var(--shadow-dark);
+}
+body.dark .toggle-btn {
+  background: url(./images/icon-sun.svg);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  background-color: var(--bg);
+  color: var(--text);
+
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 100px;
+  padding: 0 30px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  position: relative;
+  z-index: 0;
+}
+
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 330px;
+
+  background: var(--bg-image) no-repeat center/cover;
+  z-index: -1;
+}
+
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.title-container h1 {
+  color: var(--title-color);
+  font-size: 40px;
+  letter-spacing: 14px;
+}
+
+.toggle-btn {
+  height: 26px;
+  width: 26px;
+  border: none;
+  background: url(./images/icon-moon.svg) no-repeat center/contain;
+  cursor: pointer;
+}
+
+/* Input field*/
+
+.new-task-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.new-task-field::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 20px;
+
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+}
+
+.new-todo-input {
+  width: 100%;
+  padding: 24px 24px 24px 60px;
+
+  border: none;
+  outline: none;
+
+  border-radius: 8px;
+  background-color: var(--card);
+  color: var(--filters-text);
+
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 18px;
+  caret-color: var(--accent);
+}
+.new-todo-input:focus {
+  border: 1px solid var(--border-color);
+  color: var(--text);
+}
+
+/* Todo list field */
+
+.todo-list-field {
+  background-color: var(--card);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+
+  display: flex;
+  flex-direction: column;
+}
+.todo-list-field ul {
+  list-style: none;
+}
+
+.todo-item {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 18px;
+
+  position: relative;
+}
+
+.todo-item img {
+  margin-left: auto;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+.todo-item:hover img {
+  opacity: 1;
+}
+
+.todo-item::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+/* Checkbox */
+
+.todo-checkbox {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.todo-checkbox:hover {
+  border-color: transparent;
+  background: linear-gradient(var(--card), var(--card)) padding-box,
+    var(--checked) border-box;
+}
+
+.todo-checkbox:checked {
+  background: var(--checked);
+  border: none;
+}
+.todo-checkbox:checked::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  background: url(./images/icon-check.svg) no-repeat center/contain;
+  transform: translate(-50%, -56%);
+}
+
+.todo-checkbox + label:hover {
+  cursor: pointer;
+}
+
+.todo-checkbox:checked + label {
+  color: var(--border-color);
+  text-decoration: line-through;
+}
+
+/* Todo footer */
+
+.todo-stats {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 16px;
+  color: var(--filters-text);
+}
+
+.todo-filter {
+  display: flex;
+  gap: 15px;
+}
+
+.todo-filter button,
+.todo-filter-mobile button,
+.todo-stats .clear-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  color: var(--filters-text);
+  font-family: inherit;
+  font-size: 16px;
+
+  transition: color 0.2s ease-in-out;
+}
+
+.todo-filter button,
+.todo-filter-mobile button {
+  font-weight: 700;
+}
+
+.todo-filter button:hover,
+.todo-stats .clear-btn:hover,
+.todo-filter-mobile button:hover {
+  color: var(--text);
+}
+
+.todo-filter button.active,
+.todo-filter-mobile button.active {
+  color: var(--accent);
+}
+
+.todo-filter-mobile {
+  display: none;
+}
+
+@media (max-width: 500px) {
+  .header-bg {
+    background: var(--bg-image-mobile) no-repeat center/cover;
+    height: 270px;
+  }
+  .title-container h1 {
+    font-size: 35px;
+  }
+
+  .container {
+    margin-top: 70px;
+    gap: 20px;
+  }
+
+  .title-container {
+    margin-bottom: 15px;
+  }
+
+  .new-todo-input,
+  .todo-item {
+    font-size: 16px;
+    gap: 15px;
+  }
+
+  .todo-item img {
+    opacity: 1;
+  }
+
+  .todo-filter {
+    display: none;
+  }
+
+  .todo-filter-mobile {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+
+    padding: 20px;
+    background-color: var(--card);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+  }
+}
