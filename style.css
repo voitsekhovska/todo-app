@@ -64,6 +64,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -90,6 +91,7 @@ body {
 
   background: var(--bg-image) no-repeat center/cover;
   z-index: -1;
+  transition: background-image 0.4s ease, opacity 0.3s ease;
 }
 
 .title-container {
@@ -109,6 +111,7 @@ body {
   border: none;
   background: url(./images/icon-moon.svg) no-repeat center/contain;
   cursor: pointer;
+  transition: background-image 0.4s ease, opacity 0.3s ease;
 }
 
 /* Input field*/
@@ -206,7 +209,7 @@ body {
 
   position: relative;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease;
 }
 .todo-checkbox:hover {
   border-color: transparent;
@@ -267,7 +270,7 @@ body {
   font-family: inherit;
   font-size: 16px;
 
-  transition: color 0.2s ease-in-out;
+  transition: color 0.3s ease;
 }
 
 .todo-filter button,
@@ -287,6 +290,12 @@ body {
 }
 
 .todo-filter-mobile {
+  display: none;
+}
+
+.alert-msg {
+  text-align: center;
+  color: var(--title-color);
   display: none;
 }
 
@@ -319,6 +328,10 @@ body {
   }
 
   .todo-filter {
+    display: none;
+  }
+
+  .todo-filter-mobile.hidden {
     display: none;
   }
 
