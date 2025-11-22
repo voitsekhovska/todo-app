@@ -4,6 +4,8 @@ const toggle = document.querySelector(".toggle-btn");
 const newTaskForm = document.querySelector(".new-task-field");
 const newTaskInput = document.querySelector(".new-todo-input");
 const todoList = document.querySelector(".list");
+const todoTasks = todoList.querySelectorAll("li");
+const stats = document.querySelector(".todo-stats");
 
 // changing theme
 const toggleTheme = () => {
@@ -40,6 +42,7 @@ const addItemToDOM = (text) => {
   todoList.appendChild(li);
 
   checkUI();
+  todosLeft();
 };
 
 // checkbox
@@ -68,10 +71,29 @@ const createImage = () => {
   return img;
 };
 
+// deleting items
+const removeTodo = (e) => {
+  if (e.target.matches("img")) {
+    e.target.closest("li").remove();
+
+    checkUI();
+    todosLeft();
+  }
+};
+
+// updating quantity
+const todosLeft = () => {
+  const todoQuantity = stats.querySelector("span");
+  const activeTodos = todoList.querySelectorAll(
+    "input[type='checkbox']:not(:checked)"
+  );
+
+  todoQuantity.textContent = activeTodos.length;
+};
+
 const checkUI = () => {
   newTaskInput.value = "";
 
-  const todoTasks = todoList.querySelectorAll("li");
   const todoField = document.querySelector(".todo-list-field");
   const todoFieldMobile = document.querySelector(".todo-filter-mobile");
   const alert = document.querySelector(".alert-msg");
@@ -91,8 +113,10 @@ const checkUI = () => {
 const init = () => {
   toggle.addEventListener("click", toggleTheme);
   newTaskForm.addEventListener("submit", onAddItemSubmit);
+  todoList.addEventListener("click", removeTodo);
 
   checkUI();
+  todosLeft();
 };
 
 init();
