@@ -4,8 +4,10 @@ const toggle = document.querySelector(".toggle-btn");
 const newTaskForm = document.querySelector(".new-task-field");
 const newTaskInput = document.querySelector(".new-todo-input");
 const todoList = document.querySelector(".list");
-const todoTasks = todoList.querySelectorAll("li");
 const stats = document.querySelector(".todo-stats");
+const clearBtn = document.querySelector(".clear-btn");
+const filterDesktop = document.querySelector(".todo-filter");
+const filterMobile = document.querySelector(".todo-filter-mobile");
 
 // changing theme
 const toggleTheme = () => {
@@ -42,7 +44,6 @@ const addItemToDOM = (text) => {
   todoList.appendChild(li);
 
   checkUI();
-  todosLeft();
 };
 
 // checkbox
@@ -77,8 +78,16 @@ const removeTodo = (e) => {
     e.target.closest("li").remove();
 
     checkUI();
-    todosLeft();
   }
+};
+
+// clearing items
+const clearList = (e) => {
+  while (todoList.firstChild) {
+    todoList.removeChild(todoList.firstChild);
+  }
+
+  checkUI();
 };
 
 // updating quantity
@@ -91,6 +100,45 @@ const todosLeft = () => {
   todoQuantity.textContent = activeTodos.length;
 };
 
+// filters
+const filterTodo = (filter) => {
+  const items = todoList.querySelectorAll("li");
+
+  items.forEach((item) => {
+    const checkbox = item.querySelector("input[type='checkbox']");
+
+    const shouldShow =
+      filter === "all" ||
+      (filter === "active" && !checkbox.checked) ||
+      (filter === "completed" && checkbox.checked);
+
+    item.style.display = shouldShow ? "flex" : "none";
+  });
+};
+
+// active button style helper
+const applyActiveStyle = (wrapper, filter) => {
+  const buttons = wrapper.querySelectorAll("button");
+
+  buttons.forEach((button) => {
+    button.classList.toggle(
+      "active",
+      button.textContent.toLowerCase() === filter
+    );
+  });
+};
+
+const handleFilter = (e) => {
+  if (e.target.tagName !== "BUTTON") return;
+
+  const filter = e.target.textContent.toLowerCase();
+
+  filterTodo(filter);
+
+  applyActiveStyle(filterDesktop, filter);
+  applyActiveStyle(filterMobile, filter);
+};
+
 const checkUI = () => {
   newTaskInput.value = "";
 
@@ -98,7 +146,9 @@ const checkUI = () => {
   const todoFieldMobile = document.querySelector(".todo-filter-mobile");
   const alert = document.querySelector(".alert-msg");
 
-  if (todoTasks.length === 0) {
+  const todoTasks = todoList.querySelectorAll("li").length;
+
+  if (todoTasks === 0) {
     todoField.style.display = "none";
     todoFieldMobile.classList.add("hidden");
     alert.style.display = "block";
@@ -107,6 +157,8 @@ const checkUI = () => {
     todoFieldMobile.classList.remove("hidden");
     alert.style.display = "none";
   }
+
+  todosLeft();
 };
 
 // initialization
@@ -114,6 +166,10 @@ const init = () => {
   toggle.addEventListener("click", toggleTheme);
   newTaskForm.addEventListener("submit", onAddItemSubmit);
   todoList.addEventListener("click", removeTodo);
+  todoList.addEventListener("change", todosLeft);
+  clearBtn.addEventListener("click", clearList);
+  filterDesktop.addEventListener("click", handleFilter);
+  filterMobile.addEventListener("click", handleFilter);
 
   checkUI();
   todosLeft();
