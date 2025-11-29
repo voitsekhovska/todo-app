@@ -8,11 +8,34 @@ const stats = document.querySelector(".todo-stats");
 const clearBtn = document.querySelector(".clear-btn");
 const filterDesktop = document.querySelector(".todo-filter");
 const filterMobile = document.querySelector(".todo-filter-mobile");
+const todoField = document.querySelector(".todo-list-field");
+const todoFieldMobile = document.querySelector(".todo-filter-mobile");
+const alert = document.querySelector(".alert-msg");
 
 // changing theme
 const toggleTheme = () => {
   document.body.classList.toggle("dark");
-  return;
+
+  const isDark = document.body.classList.contains("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+};
+
+const loadTheme = () => {
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark");
+  }
+};
+
+const displayTodos = () => {
+  todoList.innerHTML = "";
+
+  const todos = getTodosFromStorage();
+
+  todos.forEach((todo) => addItemToDOM(todo));
+
+  checkUI();
 };
 
 // submit the form
@@ -24,17 +47,25 @@ const onAddItemSubmit = (e) => {
     return;
   }
 
-  addItemToDOM(newInputText);
+  const id = "todo-" + Date.now();
+
+  addItemToDOM({ id, text: newInputText, completed: false });
+  addTodosToStorage(newInputText, id);
 };
 
-const addItemToDOM = (text) => {
+const addItemToDOM = (todo) => {
   const li = document.createElement("li");
   li.classList.add("todo-item");
 
-  const id = "todo-" + Date.now();
+  const todoObj =
+    typeof todo === "string"
+      ? { id: "todo-" + Date.now(), text: todo, completed: false }
+      : todo;
 
-  const input = createCheckbox(id);
-  const label = createLabel(id, text);
+  li.dataset.id = todoObj.id;
+
+  const input = createCheckbox(todoObj);
+  const label = createLabel(todoObj.id, todoObj.text);
   const img = createImage();
 
   li.appendChild(input);
@@ -47,11 +78,17 @@ const addItemToDOM = (text) => {
 };
 
 // checkbox
-const createCheckbox = (id) => {
+const createCheckbox = (todo) => {
   const input = document.createElement("input");
   input.type = "checkbox";
-  input.id = id;
+  input.id = todo.id;
   input.classList.add("todo-checkbox");
+  input.checked = todo.completed;
+
+  input.addEventListener("change", () => {
+    updateTodoStatus(todo.id, input.checked);
+    todosLeft();
+  });
 
   return input;
 };
@@ -68,24 +105,31 @@ const createImage = () => {
   const img = document.createElement("img");
   img.src = "./images/icon-cross.svg";
   img.alt = "Delete";
+  img.classList.add("delete-btn");
 
   return img;
 };
 
 // deleting items
 const removeTodo = (e) => {
-  if (e.target.matches("img")) {
-    e.target.closest("li").remove();
+  if (!e.target.classList.contains("delete-btn")) return;
 
-    checkUI();
-  }
+  const li = e.target.closest("li");
+  const id = li.dataset.id;
+
+  li.remove();
+  removeTodosFromStorage(id);
+
+  checkUI();
 };
 
 // clearing items
-const clearList = (e) => {
+const clearList = () => {
   while (todoList.firstChild) {
     todoList.removeChild(todoList.firstChild);
   }
+
+  localStorage.removeItem("todos");
 
   checkUI();
 };
@@ -135,16 +179,51 @@ const handleFilter = (e) => {
 
   filterTodo(filter);
 
-  applyActiveStyle(filterDesktop, filter);
-  applyActiveStyle(filterMobile, filter);
+  [filterDesktop, filterMobile].forEach((el) => {
+    applyActiveStyle(el, filter);
+  });
+};
+
+// storage
+
+const getTodosFromStorage = () => {
+  const data = localStorage.getItem("todos");
+
+  return data ? JSON.parse(data) : [];
+};
+
+const saveTodosHelper = (todos) => {
+  localStorage.setItem("todos", JSON.stringify(todos));
+};
+
+const addTodosToStorage = (text, id) => {
+  const todos = getTodosFromStorage();
+
+  todos.push({ id, text, completed: false });
+
+  saveTodosHelper(todos);
+};
+
+const removeTodosFromStorage = (id) => {
+  const todos = getTodosFromStorage();
+
+  const updated = todos.filter((todo) => todo.id !== id);
+
+  saveTodosHelper(updated);
+};
+
+const updateTodoStatus = (id, completed) => {
+  const todos = getTodosFromStorage();
+
+  const updated = todos.map((todo) =>
+    todo.id === id ? { ...todo, completed } : todo
+  );
+
+  saveTodosHelper(updated);
 };
 
 const checkUI = () => {
   newTaskInput.value = "";
-
-  const todoField = document.querySelector(".todo-list-field");
-  const todoFieldMobile = document.querySelector(".todo-filter-mobile");
-  const alert = document.querySelector(".alert-msg");
 
   const todoTasks = todoList.querySelectorAll("li").length;
 
@@ -163,6 +242,8 @@ const checkUI = () => {
 
 // initialization
 const init = () => {
+  loadTheme();
+
   toggle.addEventListener("click", toggleTheme);
   newTaskForm.addEventListener("submit", onAddItemSubmit);
   todoList.addEventListener("click", removeTodo);
@@ -172,7 +253,7 @@ const init = () => {
   filterMobile.addEventListener("click", handleFilter);
 
   checkUI();
-  todosLeft();
 };
 
 init();
+displayTodos();
