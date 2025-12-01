@@ -125,12 +125,14 @@ const removeTodo = (e) => {
 
 // clearing items
 const clearList = () => {
-  while (todoList.firstChild) {
-    todoList.removeChild(todoList.firstChild);
-  }
+  const completedTodos = todoList.querySelectorAll(
+    "input[type='checkbox']:checked"
+  );
+  completedTodos.forEach((todo) => {
+    todo.closest("li").remove();
+  });
 
-  localStorage.removeItem("todos");
-
+  clearCompletedFromStorage();
   checkUI();
 };
 
@@ -208,6 +210,14 @@ const removeTodosFromStorage = (id) => {
   const todos = getTodosFromStorage();
 
   const updated = todos.filter((todo) => todo.id !== id);
+
+  saveTodosHelper(updated);
+};
+
+const clearCompletedFromStorage = () => {
+  const todos = getTodosFromStorage();
+
+  const updated = todos.filter((todo) => !todo.completed);
 
   saveTodosHelper(updated);
 };
