@@ -34,7 +34,7 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
+- Solution URL: [https://www.frontendmentor.io/solutions/todo-app-SjNf3ohy0x](https://www.frontendmentor.io/solutions/todo-app)
 - Live Site URL: [https://voitsekhovska.github.io/todo-app](https://voitsekhovska.github.io/todo-app/)
 
 ## My process
